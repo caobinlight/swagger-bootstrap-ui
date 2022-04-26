@@ -407,7 +407,7 @@
               <a-row>
                 <editor-script
                   style="margin-top:5px;"
-                  :value="rawScript" 
+                  :value="rawScript"
                   @change="rawScriptChange"
                 ></editor-script>
               </a-row>
@@ -450,7 +450,7 @@ export default {
   components: {
     "EditorScript":()=>import('./EditorScript'),
     "EditorDebugShow":()=>import('./EditorDebugShow'),
-    "DebugResponse":()=>import('./DebugResponse') 
+    "DebugResponse":()=>import('./DebugResponse')
   },
   props: {
     api: {
@@ -1081,7 +1081,7 @@ export default {
           }
         });
       }
-     
+
       if(KUtils.arrNotEmpty(this.authorizeQueryParameters)){
         this.authorizeQueryParameters.forEach(aqp=>{
           showGlobalParameters.push(aqp);
@@ -1168,7 +1168,7 @@ export default {
           //url-form-data表单
           this.initUrlFormValue();
         }
-       
+
       }
       this.updateScriptFromCache(cacheApi);
       this.updateHeaderFromCacheApi(cacheApi);
@@ -1751,7 +1751,7 @@ export default {
       var headerValue = e.target.value;
       var headerId = e.target.getAttribute("data-key");
       this.headerContentChnageUpdate(headerValue,headerId);
-      
+
     },
     headerContentChnageUpdate(headerValue,headerId){
       var record = this.headerData.filter(header => header.id == headerId)[0];
@@ -2634,6 +2634,11 @@ export default {
         //是否启用Host
         if(this.enableHost){
           baseUrl=this.enableHostText;
+        } else {
+          let host = this.$store.state.globals.swagger.currentInstance.host;
+          if (host) {
+            baseUrl = host;
+          }
         }
         //console.log(headers)
         var applyReuqest=this.applyRequestParams(formParams,methodType);
@@ -2738,9 +2743,15 @@ export default {
         //var formParams = this.debugFormDataParams(fileFlag);
         var formParams = validateFormd.params;
         var baseUrl='';
+
         //是否启用Host
-        if(this.enableHost){
-          baseUrl=this.enableHostText;
+        if (this.enableHost) {
+          baseUrl = this.enableHostText;
+        } else {
+          let host = this.$store.state.globals.swagger.currentInstance.host;
+          if (host) {
+            baseUrl = host;
+          }
         }
         var requestConfig = {
           baseURL:baseUrl,
@@ -2835,9 +2846,15 @@ export default {
           formParams = Object.assign(formParams, checkResult.params);
         }
         var baseUrl='';
+
         //是否启用Host
         if(this.enableHost){
           baseUrl=this.enableHostText;
+        } else {
+          let host = this.$store.state.globals.swagger.currentInstance.host;
+          if (host) {
+            baseUrl = host;
+          }
         }
         var requestConfig={
           baseURL:baseUrl,
