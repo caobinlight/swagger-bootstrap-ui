@@ -6,27 +6,31 @@
           }"
     :to="item.path"
   >
-    <my-icon v-if="item.icon" :type="item.icon"></my-icon>
-    <a-badge v-if="enableVersion&&item.hasNew" status="processing" title="新接口" style="margin-bottom:3px;" />
-    <span v-if="item.method" class="knife4j-menu-line">{{item.method}}</span>
-    <span>{{item.name}}</span>
-  </router-link>
+    <div class="menu-line">
+      <div class="menu-item">
+        <my-icon v-if="item.icon" :type="item.icon"></my-icon>
+        <span v-if="item.method" class="knife4j-menu-line">{{ item.method }}</span>
+        <span>{{ item.name }}</span>
+      </div>
+      <div class="menu-item menu-url" v-if="item.url">{{ item.url }}</div>
+    </div>
+    <a-badge v-if="enableVersion&&item.hasNew" status="processing" title="新接口" class="changed"/>
+    </router-link>
 </template>
 
 <script>
-export default {
-  props: {
-    item: Object
-  },
-  data() {
-    return {};
-  },
-  computed:{
-    enableVersion(){
+  export default {
+    props: {
+      item: Object
+    },
+    data() {
+      return {};
+    },
+    computed: {
+      enableVersion() {
         return this.$store.state.globals.enableVersion;
+      }
     }
-  }
-};
+  };
 </script>
 
-<style lang="stylus" scoped></style>
