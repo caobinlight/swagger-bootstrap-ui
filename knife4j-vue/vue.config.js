@@ -4,11 +4,11 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const productionGzipExtensions = ["js", "css"];
 module.exports = {
   publicPath: ".",
-  assetsDir: "webjars",
+  assetsDir: "",
   outputDir: "dist",
   lintOnSave: false,
   productionSourceMap: false,
-  indexPath: "doc.html",
+  // indexPath: "doc.html",
   css: {
     loaderOptions: {
       less: {

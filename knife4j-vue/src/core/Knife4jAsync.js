@@ -76,9 +76,9 @@ function SwaggerBootstrapUi(options) {
   //2、springdoc-open提供的分组地址：v3/api-docs/swagger-config
   //swagger请求api地址
   if(this.springdoc){
-    this.url = options.url || 'v3/api-docs/swagger-config'
+    this.url = options.url || '/v3/api-docs/swagger-config'
   }else{
-    this.url = options.url || 'swagger-resources'
+    this.url = options.url || '/swagger-resources'
   }
   this.i18n=options.i18n||'zh-CN'
   //是否Knife4jAggregationDesktop
