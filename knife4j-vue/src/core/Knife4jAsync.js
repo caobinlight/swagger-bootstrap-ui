@@ -2393,6 +2393,8 @@ SwaggerBootstrapUi.prototype.analysisDefinition = function (menu) {
   //解析definition
   //放弃解析所有的Model结构
   that.analysisDefinitionRefModel(menu);
+  //解析公共Security标签
+  that.readPublicSecurity(menu);
   //解析tags标签
   if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("tags")) {
     var tags = menu["tags"];
@@ -2690,6 +2692,23 @@ SwaggerBootstrapUi.prototype.readSecurityContextSchemes = function (menu) {
         this.readSecurityContextSchemesCommon(securityDefinitions);
       }
     }
+  }
+}
+
+/**
+ * 读取security参数，例如oauth2
+ * @param {*} menu
+ */
+SwaggerBootstrapUi.prototype.readPublicSecurity = function (menu) {
+  if (menu != null && typeof (menu) != "undefined" && menu != undefined && menu.hasOwnProperty("security")) {
+    var securitys = menu["security"];
+    var tmpSecuritys = [];
+    securitys.forEach(function (security) {
+      for (let key in security) {
+        tmpSecuritys.push(key)
+      }
+    })
+    this.currentInstance.publicSecuritys = tmpSecuritys;
   }
 }
 
@@ -4738,43 +4757,55 @@ SwaggerBootstrapUi.prototype.readApiSecurity = function (swpinfo, apiInfo) {
  */
 SwaggerBootstrapUi.prototype.readApiSecurityOAS2 = function (swpinfo, apiInfo) {
   //判断是否包含security节点
+  var securityKeys = new Array();
   if (KUtils.checkUndefined(apiInfo) && apiInfo.hasOwnProperty("security")) {
     var securityArr = apiInfo["security"];
     if (KUtils.arrNotEmpty(securityArr)) {
-      var securityKeys = new Array();
       securityArr.forEach(sa => {
         var saKeys = Object.keys(sa || {});
         if (KUtils.arrNotEmpty(saKeys)) {
           securityKeys = securityKeys.concat(saKeys);
         }
       })
-      if (KUtils.arrNotEmpty(securityKeys)) {
-        swpinfo.securityFlag = true;
-        swpinfo.securityKeys = securityKeys;
-      }
-      //console.log(swpinfo);
     }
+  }
+  if (KUtils.arrNotEmpty(this.currentInstance.publicSecuritys)) {
+    this.currentInstance.publicSecuritys.forEach(item => {
+      if (securityKeys.indexOf(item) < 0) {
+        securityKeys.push(item);
+      }
+    })
+  }
+  if (KUtils.arrNotEmpty(securityKeys)) {
+    swpinfo.securityFlag = true;
+    swpinfo.securityKeys = securityKeys;
   }
 }
 
 SwaggerBootstrapUi.prototype.readApiSecurityOAS3 = function (swpinfo, apiInfo) {
   //判断是否包含security节点
+  var securityKeys = new Array();
   if (KUtils.checkUndefined(apiInfo) && apiInfo.hasOwnProperty("security")) {
     var securityArr = apiInfo["security"];
     if (KUtils.arrNotEmpty(securityArr)) {
-      var securityKeys = new Array();
       securityArr.forEach(sa => {
         var saKeys = Object.keys(sa || {});
         if (KUtils.arrNotEmpty(saKeys)) {
           securityKeys = securityKeys.concat(saKeys);
         }
       })
-      if (KUtils.arrNotEmpty(securityKeys)) {
-        swpinfo.securityFlag = true;
-        swpinfo.securityKeys = securityKeys;
-      }
-      //console.log(swpinfo);
     }
+  }
+  if (KUtils.arrNotEmpty(this.currentInstance.publicSecuritys)) {
+    this.currentInstance.publicSecuritys.forEach(item => {
+      if (securityKeys.indexOf(item) < 0) {
+        securityKeys.push(item);
+      }
+    })
+  }
+  if (KUtils.arrNotEmpty(securityKeys)) {
+    swpinfo.securityFlag = true;
+    swpinfo.securityKeys = securityKeys;
   }
 }
 /**
