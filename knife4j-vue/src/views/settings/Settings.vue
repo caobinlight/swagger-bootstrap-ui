@@ -81,6 +81,24 @@
         </a-col>
       </a-row>
       <a-divider class="divider" /> -->
+      <a-row class="content-line">
+        <a-col :span="24">
+          <a-checkbox
+            @change="checkboxChange('enableMenuSort')"
+            :checked="settings.enableMenuSort"
+          ><span v-html="$t('settings.enableMenuSort')"></span
+          ></a-checkbox>
+          <a-select
+            style="width:140px;"
+            @change="changeMenuSortBy"
+            :value="settings.menuSortBy"
+          >
+            <a-select-option value="NAME">NAME</a-select-option>
+            <a-select-option value="URL">URL</a-select-option>
+          </a-select>
+        </a-col>
+      </a-row>
+      <a-divider class="divider" />
     </a-row>
   </a-layout-content>
 </template>
@@ -149,7 +167,7 @@ export default {
       } else {
         //赋予系统默认值
         instance.settings.enableHostText=sysHost;
-        
+
         localStore.setItem(Constants.globalSettingsKey, instance.settings);
       }
     });
@@ -190,6 +208,10 @@ export default {
     },
     filterOptionsChange(value) {
       this.settings.enableFilterMultipartApiMethodType = value;
+      this.saveSettingForLocal();
+    },
+    changeMenuSortBy(value) {
+      this.settings.menuSortBy = value;
       this.saveSettingForLocal();
     },
     saveSettingForLocal() {

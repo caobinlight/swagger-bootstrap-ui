@@ -275,7 +275,7 @@ const langOptions = {
       url:{
         success: 'Copy address successfully',
         fail: 'Failed to copy the address, your current browser version is not compatible, please copy manually.'
-      }, 
+      },
       method:{
         success: 'Copy Url successfully',
         fail: 'Failed to copy the url, your current browser version is not compatible, please copy manually.'
@@ -416,6 +416,7 @@ const langOptions = {
     showApi: 'Enable Menu Api Address Display',
     tagDes: 'Enable Grouping tag displays dsecription description properties',
     apiFilter: 'Open RequestMapping Interface Filtering,Default',
+    enableMenuSort: 'Enable Menu Api Sort',
     openCacheApi: 'Enable Open cached open API documents',
     plus: 'Enabling enhancements provided by Knife4j',
     save: 'Save',

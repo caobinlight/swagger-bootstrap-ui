@@ -276,7 +276,7 @@ const langOptions = {
       url:{
         success: '复制地址成功',
         fail: '复制地址失败,您当前浏览器版本不兼容,请手动复制.'
-      }, 
+      },
       method:{
         success: '复制接口成功',
         fail: '复制接口失败,您当前浏览器版本不兼容,请手动复制.'
@@ -406,6 +406,7 @@ const langOptions = {
     showApi: '菜单Api地址显示',
     tagDes: '分组tag显示dsecription说明属性',
     apiFilter: '开启RequestMapping接口过滤,默认只显示',
+    enableMenuSort: '开启菜单排序',
     openCacheApi: '开启缓存已打开的api文档',
     plus: '启用Knife4j提供的增强功能',
     save: '保存内容',
