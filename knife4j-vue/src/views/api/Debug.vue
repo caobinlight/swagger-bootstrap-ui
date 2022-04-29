@@ -1640,39 +1640,43 @@ export default {
             //this.headerData.push(newHeader);
             this.addDebugHeader(newHeader);
           } else {
-            //console.log(param)
-            //判断该参数是否是枚举
-            var enumsMode="default";
-            if(KUtils.arrNotEmpty(param.enum)){
-              //枚举类型，判断是否是数组
-              if(param.type=="array"){
-                enumsMode="multiple";
+            if (KUtils.arrNotEmpty(param.children)) {
+              this.addApiParameterToUrlForm(param.children)
+            } else {
+              //console.log(param)
+              //判断该参数是否是枚举
+              var enumsMode = "default";
+              if (KUtils.arrNotEmpty(param.enum)) {
+                //枚举类型，判断是否是数组
+                if (param.type == "array") {
+                  enumsMode = "multiple";
+                }
               }
-            }
-            var newFormHeader = {
-              id: KUtils.randomMd5(),
-              name: param.name,
-              type: "text",
-              //是否必须
-              require: param.require,
-              //文件表单域的target
-              target: null,
-              content: param.txtValue,
-              description: KUtils.propValue("description", param, ""),
-              enums: this.getEnumOptions(param), //枚举下拉框
-              //枚举是否支持多选('default' | 'multiple' )
-              enumsMode:enumsMode,
-              new: false
-            };
-            //判断枚举类型是否为空
-            if (newFormHeader.enums != null) {
-              //判断content是否为空
-              if (!KUtils.strNotBlank(newFormHeader.content)) {
-                //默认取第一个枚举值
-                newFormHeader.content = newFormHeader.enums[0].value;
+              var newFormHeader = {
+                id: KUtils.randomMd5(),
+                name: param.name,
+                type: "text",
+                //是否必须
+                require: param.require,
+                //文件表单域的target
+                target: null,
+                content: param.txtValue,
+                description: KUtils.propValue("description", param, ""),
+                enums: this.getEnumOptions(param), //枚举下拉框
+                //枚举是否支持多选('default' | 'multiple' )
+                enumsMode: enumsMode,
+                new: false
+              };
+              //判断枚举类型是否为空
+              if (newFormHeader.enums != null) {
+                //判断content是否为空
+                if (!KUtils.strNotBlank(newFormHeader.content)) {
+                  //默认取第一个枚举值
+                  newFormHeader.content = newFormHeader.enums[0].value;
+                }
               }
+              this.urlFormData.push(newFormHeader);
             }
-            this.urlFormData.push(newFormHeader);
           }
         });
       }
@@ -3061,23 +3065,17 @@ export default {
       }
       var httpReg=new RegExp("^(http|https):.*","ig");
       var fullurl="";
-      if(httpReg.test(this.api.host)){
+      if(httpReg.test(this.debugHost)){
         //如果包含,则不追究
-        fullurl=this.api.host;
-      }else{
-        if (this.api.host.startWith("/")) {
-          fullurl = protocol + "://" + location.host + this.api.host;
+        fullurl=this.debugHost;
+      } else{
+        if (this.debugHost.startWith("//")) {
+          fullurl = protocol + ":" + this.debugHost;
+        } else if (this.debugHost.startWith("/")) {
+          fullurl = protocol + "://" + location.host + this.debugHost;
         } else {
-          fullurl = protocol + "://" + this.api.host;
+          fullurl = protocol + "://" + this.debugHost;
         }
-      }
-      //判断是否开启了Host的配置,如果开启则直接使用Host中的地址
-      if(this.enableHost){
-        fullurl=this.enableHostText;
-      }
-      //判断url是否是以/开头
-      if (!url.startWith("/")) {
-        fullurl += "/";
       }
       fullurl += url;
       curlified.push("curl");
