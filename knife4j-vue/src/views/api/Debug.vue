@@ -9,8 +9,14 @@
           >
             <a-input-group compact>
               <span class="knife4j-api-summary-method"><a-icon v-if="api.securityFlag" style="font-size:16px;" type="unlock" /> {{ api.methodType }}</span>
+              <a-select
+                style="width:30%;"
+                v-model="debugHost"
+              >
+                <a-select-option v-for="server in servers" :key="server.url" :value="server.url">{{ server.url}}</a-select-option>
+              </a-select>
               <a-input
-                :style="debugUrlStyle"
+                :style="'width:40%;'"
                 :value="debugUrl"
                 @change="debugUrlChange"
               />
@@ -472,6 +478,7 @@ export default {
       //是否开启缓存
       debugUrlStyle:"width: 80%",
       enableRequestCache: false,
+      debugHost: "",
       //是否动态参数
       enableDynamicParameter: false,
       enableHost:false,
@@ -577,6 +584,9 @@ export default {
       this.debugUrlStyle="width: 80%;"
     }
   },
+  mounted() {
+    this.debugHost = this.servers[0].url;
+  },
   computed:{
     language(){
        return this.$store.state.globals.language;
@@ -586,7 +596,15 @@ export default {
     },
     enableReloadCacheParameter(){
         return this.$store.state.globals.enableReloadCacheParameter;
-    }
+    },
+    servers() {
+      var list = [];
+      if (this.enableHost) {
+        list.push({url: this.enableHostText, description: '个性化设置'});
+      }
+      list.push(...this.$store.state.globals.swagger.currentInstance.openApiBaseInfo.servers)
+      return list;
+    },
   },
   watch:{
     language:function(val,oldval){
@@ -793,6 +811,9 @@ export default {
               //hostvalue为空,默认取消
               this.enableHost=false;
             }
+          }
+          if (this.enableHost) {
+            this.debugHost = this.enableHostText;
           }
         }
         //初始化读取本地缓存全局参数
@@ -2630,21 +2651,11 @@ export default {
           url = checkResult.url;
           formParams = Object.assign(formParams, checkResult.params);
         }
-        var baseUrl='';
-        //是否启用Host
-        if(this.enableHost){
-          baseUrl=this.enableHostText;
-        } else {
-          let host = this.$store.state.globals.swagger.currentInstance.host;
-          if (host) {
-            baseUrl = host;
-          }
-        }
         //console.log(headers)
         var applyReuqest=this.applyRequestParams(formParams,methodType);
         //console.log(applyReuqest)
         var requestConfig = {
-          baseURL:baseUrl,
+          baseURL:this.debugHost,
           url: this.debugCheckUrl(url),
           method: methodType,
           headers: headers,
@@ -2742,19 +2753,8 @@ export default {
         url = validateFormd.url;
         //var formParams = this.debugFormDataParams(fileFlag);
         var formParams = validateFormd.params;
-        var baseUrl='';
-
-        //是否启用Host
-        if (this.enableHost) {
-          baseUrl = this.enableHostText;
-        } else {
-          let host = this.$store.state.globals.swagger.currentInstance.host;
-          if (host) {
-            baseUrl = host;
-          }
-        }
         var requestConfig = {
-          baseURL:baseUrl,
+          baseURL:this.debugHost,
           url: this.debugCheckUrl(url),
           method: methodType,
           headers: headers,
@@ -2845,19 +2845,8 @@ export default {
           url = checkResult.url;
           formParams = Object.assign(formParams, checkResult.params);
         }
-        var baseUrl='';
-
-        //是否启用Host
-        if(this.enableHost){
-          baseUrl=this.enableHostText;
-        } else {
-          let host = this.$store.state.globals.swagger.currentInstance.host;
-          if (host) {
-            baseUrl = host;
-          }
-        }
         var requestConfig={
-          baseURL:baseUrl,
+          baseURL:this.debugHost,
           url: this.debugCheckUrl(url),
           method: methodType,
           headers: headers,
@@ -3076,7 +3065,11 @@ export default {
         //如果包含,则不追究
         fullurl=this.api.host;
       }else{
-        fullurl = protocol + "://" + this.api.host;
+        if (this.api.host.startWith("/")) {
+          fullurl = protocol + "://" + location.host + this.api.host;
+        } else {
+          fullurl = protocol + "://" + this.api.host;
+        }
       }
       //判断是否开启了Host的配置,如果开启则直接使用Host中的地址
       if(this.enableHost){
