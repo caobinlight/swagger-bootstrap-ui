@@ -1319,7 +1319,9 @@ export default {
       } else {
         //全选
         this.urlFormData.forEach(form => {
-          this.rowUrlFormSelection.selectedRowKeys.push(form.id);
+          if (form.require) {
+            this.rowUrlFormSelection.selectedRowKeys.push(form.id);
+          }
         });
       }
     },
